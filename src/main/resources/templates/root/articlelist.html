@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <title></title>
+    <link rel="stylesheet" href="http://122.192.127.40:8030/wd/assets/wx/css/own.css">
+    <link rel="stylesheet" href="http://122.192.127.40:8030/wd/assets/wx/css/index.css">
+    <script src="http://122.192.127.40:8030/wd/assets/wx/js/jquery-1.11.3.js"></script>
+	<script src="http://122.192.127.40:8030/wd/assets/wx/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="http://122.192.127.40:8030/wd/assets/wx/layer-v1.9.0/layer/layer.js"></script> 
+	<style>
+		.media-left, .media-right, .media-body {
+    		display: inline-block;
+    		vertical-align: middle;
+		}
+		.media-left{width:90%;}.media-right{width:10%;}
+		.media{  border-bottom: 1px solid #E5E5E5;padding-bottom: 5px;}	
+		
+    </style>
+</head>
+<body style="background-color: #F0EFF5">
+    <div class="web-box">
+        <div class="item-container">
+            <div>
+                <header id="item-header">
+                   
+                </header>
+                <section id="item-section">
+                	<div id="itemdata">
+                    
+                    </div>
+                </section>
+                
+            </div>
+
+        </div>
+    </div>
+</body>
+
+
+<script type="text/javascript">
+	function GetQueryString(name){
+	    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	    var r = window.location.search.substr(1).match(reg);
+	    if(r!=null)return  unescape(r[2]); return null;
+	}
+	  
+	var code=GetQueryString("code");
+   	var state=GetQueryString("state");
+   	
+   	$.ajax({                        
+ 		type: "get",                 
+ 		url:'http://www.cu0515.com/wx/codeToOpenId/'+code,
+		async : false, 
+		error : function(request) {
+
+		},
+		success : function(data) { 
+			 //var openid="oEsXmwexM8UYG0OWG-3WaSzbKwuM";
+			 //state=1;
+			var openid=data.data.openId;
+			 //var openid="oEsXmwexM8UYG0OWG-3WaSzbKwuM"; 
+			if(state==1){
+				document.getElementById('item-header').innerHTML="通信新闻"; 
+			}else if(state==2){
+				document.getElementById('item-header').innerHTML="通信趣事";
+			}else if(state==3){
+				document.getElementById('item-header').innerHTML="我的收藏";
+			}
+			$.ajax({                        
+		 		type: "post",                 
+		 		url:'http://122.192.127.40:8030/wd/article/articlelist/?type='+state+'&openid='+openid,
+				async : false, 
+				error : function(request) {
+					
+				},
+				success : function(data) {  
+					 var obj=data.data; 
+					 for(var i=0;i<obj.length;i++){ 
+						 var picturl=obj[i].picture_url;
+						 if(null!=picturl&&picturl!=''){
+							 if(picturl.indexOf('http://')>-1){
+								 document.getElementById('itemdata').innerHTML+="<a href='article.html?id="+obj[i].id+"&openid="+openid+"'><div class='media'><div class='media-left'><p class='item-notice'>"+obj[i].title+"</p></div><div class='media-right'> <img class='img-responsive' src='"+picturl+"' style='width:27px;height:27px'></div></div></a>";
+							 }else{
+								 picturl="http://122.192.127.40:8030/wd"+picturl;
+								 document.getElementById('itemdata').innerHTML+="<a href='article.html?id="+obj[i].id+"&openid="+openid+"'><div class='media'><div class='media-left'><p class='item-notice'>"+obj[i].title+"</p></div><div class='media-right'> <img class='img-responsive' src='"+picturl+"' style='width:27px;height:27px'></div></div></a>";
+							 }
+						 }else{
+							 document.getElementById('itemdata').innerHTML+="<a href='article.html?id="+obj[i].id+"&openid="+openid+"'><div class='media'><div class='media-left'><p class='item-notice'>"+obj[i].title+"</p></div><div class='media-right'> <img class='img-responsive' src='imgs/Me.png' style='width:27px;height:27px'></div></div></a>";
+						 }
+					 }
+				}
+			});
+		}
+	});
+   	  
+</script> 
+</html>

@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <title></title>
+    <link rel="stylesheet" href="http://122.192.127.40:8030/wd/assets/wx/css/own.css">
+    <link rel="stylesheet" href="http://122.192.127.40:8030/wd/assets/wx/css/index.css">
+    <script src="http://122.192.127.40:8030/wd/assets/wx/js/jquery-1.11.3.js"></script>
+	<script src="http://122.192.127.40:8030/wd/assets/wx/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="http://122.192.127.40:8030/wd/assets/wx/layer-v1.9.0/layer/layer.js"></script> 
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript"></script> 
+	
+</head> 
+
+<body>
+    <div class="web-box" style="padding: 20px 10px;">
+        <header id="detail-header">
+            <div class="detail-top">
+                <h2 id="title"></h2>
+            </div>
+            <div class="detail-bottom">
+                <span id="date"></span>
+                <a href="javascript:void(0)">盐城联通</a>
+            </div>
+        </header>
+        <section id="detail-section">
+            <div id="content" class="detail-box">
+                 
+            </div> 
+        </section>
+        <footer id="detail-footer">
+            <div class="row">
+               
+                <div class="col-xs-6 text-center">
+                    <a href=""><img class="img-responsive img-thumbnail img-thumbnail" id="userqrcode" src="imgs/head-icon.png" alt=""></a>
+                </div>
+                
+                <div class="col-xs-6 text-center" id="agentcode" style="display:none">
+                    <a href=""><img class="img-responsive img-thumbnail img-thumbnail" id="agentimg"  src="imgs/head-icon.png" alt=""></a>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="col-xs-12 footer-bottom">
+                    <span id="readcount">阅读 &nbsp; </span>
+                    <span >
+                        <i class="ok" onclick="addpraise()" ></i>
+                        <span id="praise"></span>
+                    </span>
+                    <span >
+                        <i class="sc" onclick="addfavorite()" ></i>
+                        <span id="favorite"></span>
+                    </span>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+ <script type="text/javascript">  
+ 	 
+	function GetQueryString(name){
+	    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	    var r = window.location.search.substr(1).match(reg);
+	    if(r!=null)return  unescape(r[2]); return null;
+	}
+	
+	var id=GetQueryString("id");
+   	var openid=GetQueryString("openid"); 
+   	
+   	
+   	var code=GetQueryString("code");
+   	var state=GetQueryString("state");
+   	
+   	
+   	//自己点击
+   	if(null==state||null==code){
+   		$.ajax({                        
+	 		type: "post",
+	 		url:'http://122.192.127.40:8030/wd/article/findArticleIndex/?article_id='+id+'&openid='+openid,
+			async : false, 
+			error : function(request) {
+			},
+			success : function(data) {  
+				 var obj=data.data; 
+				 document.getElementById('title').innerHTML=obj.title; 
+				 document.getElementById('date').innerHTML=fmtDate(obj.create_date);
+				 if(typeof(obj.content)!="undefined"){
+					 document.getElementById('content').innerHTML=obj.content;
+				 }else{ 
+					 document.getElementById('content').load(obj.content_url);
+				 } 
+				 document.getElementById('readcount').innerHTML="阅读"+obj.read_count;
+				 if(typeof(obj.praise_count)=="undefined"){
+					 obj.praise_count=0;
+				 }
+				 if(typeof(obj.favorite)=="undefined"){
+					 obj.favorite=0;
+				 }
+				 document.getElementById('praise').innerHTML=obj.praise_count;
+				 document.getElementById('favorite').innerHTML=obj.favorite;
+			}
+		}); 
+   	}else{
+   		
+   	}
+   
+   	
+	var url = encodeURIComponent(window.location.href); 
+   	$.ajax({                        
+ 		type: "get",
+ 		url:'http://www.cu0515.com/wx/jsTicket/'+url+'/',
+		async : false, 
+		error : function(request) {
+		},
+		success : function(data) { 
+			var a=JSON.stringify(data.data);
+			
+			alert(a); 
+		}
+	});
+   	
+   	wx.config({
+   	    debug: false, 
+   	    appId: '${appid}', 
+   	    timestamp: '${timestamp}', 
+   	    nonceStr: '${rand}', 
+   	    signature: '${sign}',
+   	    jsApiList:[
+   	        'checkJsApi',
+   	        'onMenuShareTimeline',
+   	        'onMenuShareAppMessage',
+   	        'onMenuShareQQ',
+   	        'onMenuShareWeibo',
+   	        'hideMenuItems',
+   	        'showMenuItems',
+   	        'hideAllNonBaseMenuItem',
+   	        'showAllNonBaseMenuItem',
+   	        'chooseImage',
+   	        'previewImage',
+   	        'uploadImage',
+   	        'getNetworkType',
+   	        'hideOptionMenu',
+   	        'showOptionMenu']  
+   	}); 
+
+   	var shareData = {
+   	    title: '${title}',
+   	    desc: '${desc}',
+   	    link: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${url}&response_type=code&scope=snsapi_base&state=1#wechat_redirect',
+   	    imgUrl: '${imgurl}'
+   	}
+   	wx.ready(function(){ 
+   	    // 注册分享朋友圈事件
+   	    wx.onMenuShareTimeline({
+   	        title: shareData.title,
+   	        link: shareData.link,
+   	        imgUrl: shareData.imgUrl,
+   	        success: function () {
+   	            /* var submitData = {
+   					openid: '${openid}',
+   					fromopenid:'${fromopenid}',
+   					aid:'${aid}'
+   				}; 
+   				$.post('<%=basePath%>addsubscrfx/', submitData,
+   				function(data) {
+   					
+   				},"json") */
+   	        },
+   	        cancel: function () { 
+   	        }
+   	    });
+   	 	
+   	    wx.onMenuShareAppMessage({
+   	        title: shareData.title,
+   	        desc: shareData.desc,
+   	        link: shareData.link,
+   	        imgUrl: shareData.imgUrl,
+   	        success: function () { 
+   	        },
+   	        cancel: function () { 
+   	        }
+   	    });
+   	});
+   	
+   	$.ajax({                        
+ 		type: "post",                 
+ 		url:'http://www.cu0515.com/NoAuthService/userPermQrCode/'+openid+'/',
+		async : false, 
+		error : function(request) {
+			
+		},
+		success : function(data) {  
+			 var obj=data.data;  
+			 $("#userqrcode").attr("src"," https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket="+data.data.ticket);
+		}
+	});
+   	
+	$.ajax({                        
+ 		type: "post",                 
+ 		url:'http://122.192.127.40:8030/findAgentPic/?openid='+openid,
+		async : false, 
+		error : function(request) {
+			
+		},
+		success : function(data) {  
+			 var obj=data.data;  
+			 if(obj!=''){
+				 $("#agentcode").show();
+				 $("#agentimg").attr("src","http://www.cu0515.com/NoAuthService/show_pict/"+obj);
+			 } 
+		}
+	});
+	
+	
+	function addpraise(){ 
+		$.ajax({                        
+	 		type: "post",                 
+	 		url:'http://122.192.127.40:8030/wd/article/addPar/?article_id='+id+'&openid='+openid,
+			async : false, 
+			error : function(request) {
+				
+			},
+			success : function(data) {  
+				 var obj=data.data;   
+				 if(obj==1){
+					 $.ajax({                        
+					 		type: "post",                 
+					 		url:'http://122.192.127.40:8030/wd/article/findArticleById/?id='+id+'&openid='+openid,
+							async : false, 
+							error : function(request) {
+								
+							},
+							success : function(data) {  
+								 var obj=data.data;  
+								 document.getElementById('praise').innerHTML=obj.praise_count; 
+							}
+						});
+				 }else if(obj==-1){
+					 layer.alert('已点赞', {
+							icon : 6
+					  });
+				 }
+			}
+		});
+	}
+	
+	function addfavorite(){ 
+		$.ajax({                        
+	 		type: "post",                 
+	 		url:'http://122.192.127.40:8030/wd/article/addFov/?article_id='+id+'&openid='+openid,
+			async : false, 
+			error : function(request) {
+				
+			},
+			success : function(data) {  
+				 var obj=data.data;   
+				 if(obj==1){
+					 $.ajax({                        
+					 		type: "post",                 
+					 		url:'http://122.192.127.40:8030/wd/article/findArticleById/?id='+id+'&openid='+openid,
+							async : false, 
+							error : function(request) {
+								
+							},
+							success : function(data) {  
+								 var obj=data.data;  
+								 document.getElementById('favorite').innerHTML=obj.favorite;
+							}
+						});
+				 }else if(obj==-1){
+					 layer.alert('已收藏', {
+							icon : 6
+					  });
+				 }
+			}
+		}); 
+	}
+	
+	function fmtDate(obj){
+	    var date =  new Date(obj);
+	    var y = 1900+date.getYear();
+	    var m = "0"+(date.getMonth()+1);
+	    var d = "0"+date.getDate();
+	    return y+"-"+m.substring(m.length-2,m.length)+"-"+d.substring(d.length-2,d.length);
+	}
+	 
+</script>
+
+</html>

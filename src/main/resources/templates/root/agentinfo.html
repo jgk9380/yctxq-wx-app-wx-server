@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <title></title>
+    <link rel="stylesheet" href="http://122.192.127.40:8030/wd/assets/wx/css/own.css">
+	<link rel="stylesheet" type="text/css" href="http://122.192.127.40:8030/wd/assets/wx/css/index.css">
+	<script src="http://122.192.127.40:8030/wd/assets/wx/js/jquery-1.11.3.js"></script>
+	<script src="http://122.192.127.40:8030/wd/assets/wx/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="http://122.192.127.40:8030/wd/assets/wx/layer-v1.9.0/layer/layer.js"></script> 
+</head>
+<body style="background-color: #F0EFF5">
+    <div class="web-box">
+        <header id="header" class="text-center">
+            <div class="media">
+                <div class="media-body">
+                    <div class="media-left">
+                        <img class="img-responsive img-thumbnail img-circle" id="headimg" src="http://122.192.127.40:8030/wd/assets/wx/img/Me.png" alt="">
+                    </div>
+                    <div class="media-left">
+                        <h3><div id="nickname">用户昵称</div></h3>
+                        <p style=" display: inline-block;">
+                            <i class="phone"></i>
+                            <span><div id="tele"  style=" display: inline-block;"></div></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <section id="section">
+            <ul class="list-unstyled">
+                <li>
+                    <a href="javascript:void(0)">
+                    	已发展业务数量 <span>0</span>
+                    </a>
+                </li> 
+            </ul>
+            
+        </section>
+    </div>
+</body>
+
+
+<script type="text/javascript">
+  
+function GetQueryString(name){
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)return  unescape(r[2]); return null;
+} 
+	 
+ 	 var agentwxid=GetQueryString("agentwxid"); 
+	 $.ajax({                        
+	 		type: "post",                 
+	 		url:'http://122.192.127.40:8030/wd/findAgentDesc',
+			async : false,
+			data : {
+				agentwxid : agentwxid 
+			},
+			error : function(request) {
+
+			},
+			success : function(data) { 
+				if(null!=data.data.HEADIMGURL&&data.data.HEADIMGURL!=''){
+					$("#headimg").attr("src",data.data.HEADIMGURL);
+				} 		  
+				document.getElementById('nickname').innerHTML=data.data.NICKNAME;
+				document.getElementById('tele').innerHTML=data.data.TELE;
+			}
+		});
+	 
+	 
+</script>
+</html>
+
+

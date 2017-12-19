@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <title>号码绑定</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0"/>
+    <script src="assets/js/jquery/jquery.js"></script>
+    <script src="assets/js/initJquery.js"></script>
+    <script src="assets/js/vue.min.js"></script>
+    <link rel="stylesheet" href="assets/css/weui.css">
+    <script src="assets/js/myInfo.js"></script>
+</head>
+
+<body ontouchstart="ontouchstart">
+
+<div class="container-fluid" id="app">
+    <div class="row">
+        <div class="text-center">
+            <img class="img-circle" :src=wxUser.headimgurl height="100" width="100" alt=" "/>
+        </div>
+    </div>
+
+    <form class="form-horizontal">
+        <fieldset name="号码绑定" style="border-width: 2px; border-color: #990000;">
+            <div class="row text-center" style="margin-bottom: 1em;margin-top: 1em;">
+                <span>号码绑定</span>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-2 control-label">电话号码：</label>
+                <div class="col-sm-7">
+                    <input type="email" class="form-control" id="inputEmail3" placeholder="电话号码">
+                </div>
+                <div class="col-sm-2">
+                    <button>获取验证码</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-2 control-label">验证码：</label>
+                <div class="col-sm-7">
+                    <input type="password" class="form-control" id="inputPassword3" placeholder="验证码">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-success">提交绑定号码</button>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <div class="row text-center" style="margin-bottom: 1em;margin-top: 1em;">
+                <span>用户资料</span>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-2 control-label">用户姓名：</label>
+                <div class="col-sm-7">
+                    <input type="email" class="form-control" id="userName" placeholder="用户姓名">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-2 control-label">邮寄地址：</label>
+                <div class="col-sm-7">
+                    <input type="password" class="form-control" id="address" placeholder="邮寄地址（用于邮寄）">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-success">提交用户资料</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+</body>
+</html>
+
+
+<!--<form>-->
+<!--<div id="app" style="text-align:center">-->
+<!--<div id="toast" style="display: none;">-->
+<!--<div class="weui_mask_transparent"></div>-->
+<!--<div class="weui_toast">-->
+<!--<i class="weui_icon_toast"></i>-->
+<!--<p class="weui_toast_content" id="toastinfo">短信已发出</p>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div style="height:0.2em"></div>-->
+<!---->
+<!--<img :src=wxUser.headimgurl height="90" width="90" alt=" "/>-->
+
+<!--<div class="page"-->
+<!--style="border:1px solid #888; padding:0.2em 0.2em 0.2em 0.2em ; margin: 0.2em 0.2em 0.2em 0.2em">-->
+<!--<div class="hd center">-->
+<!--<h4 class="page_title ">号码绑定</h4>-->
+<!--</div>-->
+<!--<div style="height:0.2em"></div>-->
+<!--<div class="weui_cells weui_cells_form">-->
+<!--<div class="weui_cell">-->
+<!--<div class="weui_cell_hd">-->
+<!--<label class="weui_label">电话号码</label>-->
+<!--</div>-->
+<!--<div class="weui_cell_bd weui_cell_primary">-->
+<!--<input class="weui_input" type="number" pattern="[0-9]*" placeholder="请输入电话号码"-->
+<!--v-model=tele    id="tele"></input>-->
+<!--</div>-->
+<!--<div class="button_sp_area">-->
+<!--<a v-if="codeButtonVisable"  @click="genrateAuthCode" class="weui_btn weui_btn_mini weui_btn_primary"-->
+<!--id="getyzm" :class="{weui_btn_disabled:codeButtonDisable}">{{codeButtonTitle}}</a>-->
+<!--&lt;!&ndash;获取验证码&ndash;&gt;-->
+<!--</div>-->
+<!--</div>-->
+<!--<div style="height:0.5em"></div>-->
+<!--<div v-if="codeButtonVisable" class="weui_cell weui_vcode">-->
+<!--<div class="weui_cell_hd">-->
+<!--<label class="weui_label">验证码</label>-->
+<!--</div>-->
+<!--<div class="weui_cell_bd weui_cell_primary">-->
+<!--<input id="yzm" class="weui_input" type="number" pattern="[0-9]*" v-model="code"-->
+<!--placeholder="请输入短信验证码"/>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div style="height:0.5em"></div>-->
+<!--</div>-->
+<!--<div style="height:0.5em"></div>-->
+<!--<a v-if="canSubmitBind" class="weui_btn weui_btn_primary" v-bind:class="{weui_btn_disabled:!canSubmitBind}" id="binding"-->
+<!--@click="submitBind" :disabled=!canSubmitBind>提交绑定号码</a>-->
+
+<!--</div>-->
+<!--<div style="height:1em"></div>-->
+<!--<div class="page"-->
+<!--style="border:1px solid #000; padding:0.2em 0.2em 0.2em 0.2em ; margin: 0.2em 0.2em 0.2em 0.2em">-->
+<!--&lt;!&ndash;<div class="hd center">-->
+<!--<h2 class="page_title ">号码绑定</h2>-->
+<!--</div>&ndash;&gt;-->
+<!--<div style="height:0.2em"></div>-->
+<!--<div class="weui_cells weui_cells_form">-->
+<!--<div class="weui_cell">-->
+<!--<div class="weui_cell_hd">-->
+<!--<label class="weui_label">个人姓名:</label>-->
+<!--</div>-->
+<!--<div class="weui_cell_bd weui_cell_primary">-->
+<!--<input class="weui_input" type="text" placeholder="可以不填写" id="longName"   v-model="wxUser.longName" />-->
+<!--</div>-->
+<!--</div>-->
+<!--<div style="height:0.2em"></div>-->
+<!--<div class="weui_cell">-->
+<!--<div class="weui_cell_hd">-->
+<!--<label class="weui_label">邮寄地址:</label>-->
+<!--</div>-->
+<!--<div class="weui_cell_bd weui_cell_primary">-->
+<!--<input class="weui_input" placeholder="奖品邮寄用，可以不填写" v-model="wxUser.mailAddr"    id="address"/>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div style="height:0.5em"></div>-->
+<!--<a @click="submitAddInfo()" class="weui_btn weui_btn_primary">提交个人资料</a>-->
+<!--</div>-->
+<!--</div>-->
+<!--</form>-->

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profilesXml xmlns="http://maven.apache.org/PROFILES/1.0.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://maven.apache.org/PROFILES/1.0.0 http://maven.apache.org/xsd/profiles-1.0.0.xsd">
+    <profiles>
+        <profile>
+            <id>test1</id>
+            <properties>
+                <hello>world1</hello>
+            </properties>
+        </profile>
+        <profile>
+            <id>test11</id>
+            <properties>
+                <hello>world11</hello>
+            </properties>
+        </profile>
+    </profiles>
+</profilesXml>

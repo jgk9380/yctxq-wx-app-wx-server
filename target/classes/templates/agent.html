@@ -1,0 +1,286 @@
+ 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<title>微信</title>
+<link rel="stylesheet" href="http://122.192.127.40:8030/wd/assets/wx/css/own.css">
+<link rel="stylesheet" type="text/css" href="http://122.192.127.40:8030/wd/assets/wx/css/index1.css">
+<script src="http://122.192.127.40:8030/wd/assets/wx/js/jquery-1.11.3.js"></script>
+<script src="http://122.192.127.40:8030/wd/assets/wx/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://122.192.127.40:8030/wd/assets/wx/layer-v1.9.0/layer/layer.js"></script> 
+</head>
+<body class="clearBoth">
+	<div class="h5">
+		<header id="header" class="">
+			<div class="header_top">代理商信息</div>
+			<div class="header_msg">
+				<div class="msg_left col-xs-4">
+					<img src="http://122.192.127.40:8030/wd/assets/wx/img/chengji.png" alt="">
+				</div>
+				<div class="msg_right col-xs-8">
+					<p>填写须知:</p>
+					<p>1.请认真填写代理商信息</p>
+					<p>2.绑定银行卡必须与注册姓名一致</p>
+				</div>
+			</div>
+		</header>
+		<!-- /header -->
+		<section>
+			<div class="section_top">代理商信息</div>
+
+			<div class="form_group clearBoth">
+				<label for="name" class="col-xs-4 control_label">姓名:</label>
+				<div class="col-xs-7">
+					<input type="text" class="control_input" id="certname" placeholder="">
+				</div>
+			</div>
+
+			<div class="form_group clearBoth">
+				<label for="pwd" class="col-xs-4 control_label">身份证:</label>
+				<div class="col-xs-7">
+					<input type="text" class="control_input" id="certid" placeholder="">
+				</div>
+			</div>
+
+			<div class="form_group clearBoth">
+				<label for="pwd" class="col-xs-4 control_label">代理商ID:</label>
+				<div class="col-xs-7">
+					<input type="text" class="control_input" id="uid" placeholder="">
+				</div>
+			</div>
+
+			<div class="form_group clearBoth">
+				<label for="pwd" class="col-xs-4 control_label">地址:</label>
+				<div class="col-xs-7">
+					<input type="text" class="control_input" id="address" placeholder="">
+				</div>
+			</div>
+
+			<div class="form_group clearBoth">
+				<label for="pwd" class="col-xs-4 control_label">银行名称:</label>
+				<div class="col-xs-7">
+					<input type="text" class="control_input" id="bank" placeholder="">
+				</div>
+			</div>
+
+			<div class="form_group clearBoth">
+				<label for="pwd" class="col-xs-4 control_label">银行账号:</label>
+				<div class="col-xs-7">
+					<input type="text" class="control_input" id="bankaccount" placeholder="">
+				</div>
+			</div>
+
+			<div class="form_group clearBoth">
+				<label for="pwd" class="col-xs-4 control_label">银行账号姓名:</label>
+				<div class="col-xs-7">
+					<input type="text" class="control_input" id="accountname" placeholder="">
+				</div>
+			</div>
+
+			<div class="form_group clearBoth">
+				<label for="pwd" class="col-xs-4 control_label">营业执照编号:</label>
+				<div class="col-xs-7">
+					<input type="text" class="control_input" id="licence_id" placeholder="">
+				</div>
+			</div>
+
+			<div class="form_group clearBoth">
+				<label for="pwd" class="col-xs-4 control_label">门店名称:</label>
+				<div class="col-xs-7">
+					<input type="text" class="control_input" id="store_name" placeholder="">
+				</div>
+			</div> 
+
+			<div class="form_group clearBoth">
+				<div class="col-xs-11">
+					<a class="control_a" href="javascript:addAgentBySelf()">提交</a>
+				</div>
+			</div>
+
+		</section>
+	</div>
+</body>
+
+<script type="text/javascript">
+  
+function GetQueryString(name){
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)return  unescape(r[2]); return null;
+}
+ 
+
+function addAgentBySelf(){
+	
+ 	var owner=GetQueryString("owner");
+ 	var pictid=GetQueryString("pictid");
+	var certname=$("#certname").val();
+	if(certname==''){
+		layer.alert('姓名不能为空', {
+			icon : 6
+		});
+		return false;
+	} 
+	
+	var certid=$("#certid").val();
+	if(certid==''){
+		layer.alert('身份证号码不能为空', {
+			icon : 6
+		});
+	 	return false;
+	}  
+	var tip=IdentityCodeValid(certid); 
+	if(tip!='成功'){
+		layer.alert(tip, {
+			icon : 6
+		});
+	 	return false;
+	}
+	
+	 var uid=$("#uid").val();
+	 if(uid==''){
+		 layer.alert('代理商ID不能为空', {
+				icon : 6
+		 });
+	 	 return false;
+	 } 
+	 
+	 
+	 var address=$("#address").val();
+	 if(address==''){
+		 layer.alert('地址不能为空', {
+				icon : 6
+		 });
+	 	 return false;
+	 }
+	 
+	 var bank=$("#bank").val();
+	 if(bank==''){
+		 layer.alert('银行名称不能为空', {
+				icon : 6
+		 });
+	 	 return false;
+	 }
+	 var bankaccount=$("#bankaccount").val();
+	 if(bankaccount==''){
+		 layer.alert('银行账号不能为空', {
+				icon : 6
+		 });
+	 	 return false;
+	 }
+	 var accountname=$("#accountname").val();
+	 if(accountname==''){
+		 layer.alert('银行账号名称不能为空', {
+				icon : 6
+		 });
+	 	 return false;
+	 }
+	
+	 var licence_id=$("#licence_id").val();
+	 if(licence_id==''){
+		 layer.alert('营业执照编号不能为空', {
+				icon : 6
+		 });
+	 	 return false;
+	 }
+	
+	 var store_name=$("#store_name").val();
+	 if(store_name==''){
+		 layer.alert('门店名称不能为空', {
+				icon : 6
+		 });
+	 	 return false;
+	 }  
+	 $.ajax({                        
+	 		type: "post",                 
+	 		url:'http://122.192.127.40:8030/wd/addagent',
+			async : false,
+			data : {
+				cert_id : certid,
+				cert_name : certname,
+				uid : uid,
+				address : address,
+				bank_name : bank,
+				bank_account : bankaccount,
+				bank_account_name : accountname,
+				licence_id : licence_id,
+				store_name : store_name,
+				owner : owner,
+				pictid:pictid
+			},
+			error : function(request) {
+
+			},
+			success : function(data) { 
+				if (data.data == 1) {
+					layer.alert('操作成功', {
+						icon : 6
+					});
+				} else if (data.data == -1) { 
+					layer.alert('代理商ID不存在', {
+						icon : 6
+					});
+				} else if (data.data==-2){
+					layer.alert('代理商已存在', {
+						icon : 6
+					});
+				}
+			}
+		});
+
+	}
+	
+function IdentityCodeValid(code) { 
+    var city={11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",22:"吉林",23:"黑龙江 ",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北 ",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏 ",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外 "};
+    var tip = "";
+    var pass= true;
+    
+    if(!code || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(code)){
+        tip = "身份证号格式错误";
+        pass = false;
+    }
+    
+   else if(!city[code.substr(0,2)]){
+        tip = "地址编码错误";
+        pass = false;
+    }
+    else{
+        //18位身份证需要验证最后一位校验位
+        if(code.length == 18){
+            code = code.split('');
+            //∑(ai×Wi)(mod 11)
+            //加权因子
+            var factor = [ 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 ];
+            //校验位
+            var parity = [ 1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2 ];
+            var sum = 0;
+            var ai = 0;
+            var wi = 0;
+            for (var i = 0; i < 17; i++)
+            {
+                ai = code[i];
+                wi = factor[i];
+                sum += ai * wi;
+            }
+            var last = parity[sum % 11];
+            if(parity[sum % 11] != code[17]){
+                tip = "校验位错误";
+                pass =false;
+            }
+        }
+    }
+    if(pass){ 
+    	tip="成功";
+    } 
+    return tip;
+}
+</script>
+
+</head>
+</html>

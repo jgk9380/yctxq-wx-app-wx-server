@@ -1,0 +1,32 @@
+--远程表
+select * from jemtest.j_code_city    --业务单元及负责人的关系
+select * from jemtest.j_code_grid    --网格与客户群及业务的关关联
+select * from jemtest.j_code_cgroup  --客户群及负责人
+select * from jemtest.J_CODE_CHANNEL --网点与网格和渠道经理的关联
+                                     --营业工号与营业厅的关联
+
+                                      --指标基础表
+create table j_target_type(
+    id  number primary key ,
+    dest_type  number, --目标类型  1、营业员，2渠道。
+    cycle_type number,  --周期类型  1、日 2、周 3、月 4、年。
+    remark varchar2(800)     --指标说明
+）
+
+create table j_target(   --指标表
+    id number primary key,
+    target_type number references j_target_type，
+    dest_value  varchar2(40),                --指标对象
+    cycle_value varchar2(40)，                 --指标时间  ,日周年月的第一天算起，格式同业为YYYYMMDD
+    value  number                            --指标值
+)
+
+
+--本地表
+select * from code_deposit            --编码表
+select * from login_user              --登录工号与emp的关联
+select * from depart                  --部门表
+
+
+--本地远程表（本地维护，同步到远程）
+select * from employee               --自建营业工号（staff_id）与营业员的关联（）

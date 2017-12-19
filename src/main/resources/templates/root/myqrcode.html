@@ -1,0 +1,90 @@
+ 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<title>盐城联通</title>
+<link rel="stylesheet" href="http://122.192.127.40:8030/wd/assets/wx/css/own.css">
+<link rel="stylesheet" type="text/css" href="http://122.192.127.40:8030/wd/assets/wx/css/index.css">
+<script src="http://122.192.127.40:8030/wd/assets/wx/js/jquery-1.11.3.js"></script>
+<script src="http://122.192.127.40:8030/wd/assets/wx/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://122.192.127.40:8030/wd/assets/wx/layer-v1.9.0/layer/layer.js"></script> 
+</head>
+<body class="clearBoth">
+	<div class="h5">
+		
+	</div>
+</body>
+
+<script type="text/javascript">
+	function GetQueryString(name){
+	    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	    var r = window.location.search.substr(1).match(reg);
+	    if(r!=null)return  unescape(r[2]); return null;
+	}
+	 
+	var code=GetQueryString("code");
+   	var state=GetQueryString("state"); 
+   		
+   	 
+   	  $.ajax({                        
+	 		type: "get",                 
+	 		url:'http://www.cu0515.com/wx/codeToOpenId/'+code,
+			async : false, 
+			error : function(request) {
+	
+			},
+			success : function(data) { 
+				var  openid=data.data.openId;
+				
+				//var openid="oEsXmwRAQyi8Xffmng6M-CxxyC0A";
+				$.ajax({                        
+			 		type: "post",                 
+			 		url:'http://122.192.127.40:8030/wd/checkPic',
+					async : false,
+					data : {
+						openid : openid,
+						pictid : state
+					},
+					error : function(request) {
+						
+					},
+					success : function(data) {  
+						if(data.code==-1){
+							layer.alert('未分配管理员', {
+								icon : 6
+							}); 
+						}else if(data.code==-2){
+							layer.alert('请先关注盐城通讯圈，并且绑定号码', {
+								icon : 6
+							}); 
+						}else if(data.code==-3){
+							layer.alert('请先关注盐城通讯圈，并且绑定号码', {
+								icon : 6
+							}); 
+						}else if(data.code==-4){
+							layer.alert('不是管辖的二维码', {
+								icon : 6
+							}); 
+						}else if(data.code==1){
+							window.location.href="bill.html?agentwxid="+data.data+"&openid="+data.msg; 
+						}else if(data.code==2){
+							window.location.href="agent.html?owner="+data.msg+"&pictid="+data.data; 
+						}else if(data.code==3){
+							window.location.href="agentinfo.html?agentwxid="+data.data; 
+						}else if(data.code==-5){
+							window.location.href="agentapply.html?wx_user_id="+data.msg+"&pictid="+data.data; 
+						}
+					}
+				});
+			}
+	  });  
+   	  
+</script> 
+</head>
+</html>
