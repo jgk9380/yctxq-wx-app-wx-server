@@ -13,8 +13,14 @@ import org.springframework.data.repository.query.Param;
 
 public interface WxUserDao extends CrudRepository<WxUser, Long> {
     WxUser findById(long id);
+
     @Query(value = "select o from WxUser o where o.openId=:openId and o.wxApp.id=:appId")
     WxUser findByAppIdAndOpenId(@Param("appId") String appId, @Param("openId") String openId);
+
+    @Query(value = "select o from WxUser o " +
+            "where (o.nickname like :searchValue or o.tele like :searchValue) and  o.wxApp.id='wx7dcc6b2e03a47c0b'")
+    List<WxUser> findLikeByTeleOrNickname(@Param("searchValue") String sv);
+
 
     @Query(value = "select o from WxUser o where o.openId=:openId and o.wxApp.id='wx7dcc6b2e03a47c0b'")
     WxUser findYctxqWxUserByOpenId(@Param("openId") String openId);

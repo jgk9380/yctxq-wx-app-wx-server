@@ -121,6 +121,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/wxf/**"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, "/login","/wx/**","/public/**").permitAll()
+                .antMatchers(HttpMethod.PUT, "/login","/wx/**","/public/**").permitAll()
                 //.antMatchers(HttpMethod.POST, "/wx/**").permitAll()
                 //.antMatchers(HttpMethod.POST, "/**").permitAll() //debug 时, 不用对 Authorization 作验证
                 .anyRequest().authenticated();

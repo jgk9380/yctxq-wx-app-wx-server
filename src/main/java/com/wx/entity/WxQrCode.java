@@ -1,5 +1,7 @@
 package com.wx.entity;
 
+import org.springframework.web.bind.annotation.PathVariable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -19,6 +21,18 @@ public class WxQrCode {
     Long wxUserId;
     @Column
     Long pictId;
+
+
+    @Column
+    String addOpenId;
+
+    public String getAddOpenId() {
+        return addOpenId;
+    }
+
+    public void setAddOpenId(String addOpenId) {
+        this.addOpenId = addOpenId;
+    }
 
     public Long getPictId() {
         return pictId;

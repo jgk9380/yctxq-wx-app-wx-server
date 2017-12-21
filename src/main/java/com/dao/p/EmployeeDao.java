@@ -14,6 +14,7 @@ import java.util.List;
 public interface EmployeeDao extends JpaRepository<Employee, String> {
     Employee findByName(String name);
     Employee findById(String id);
+    Employee findByTele(String tele);
     @Query(value="select o from Employee o where o.name like :where or o.tele like :where or o.depart.name like :where ")
     List<Employee> findByWhere(@Param("where")String where);
 }

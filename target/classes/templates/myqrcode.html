@@ -29,60 +29,67 @@
 	}
 	 
 	var code=GetQueryString("code");
-   	var state=GetQueryString("state"); 
+   	var state=GetQueryString("state");
+    //window.location.href="http://www.cu0515.com/#/scan/"+code+"/"+state;
 
-   	  $.ajax({                        
-	 		type: "get",                 
+   	  $.ajax({
+	 		type: "get",
 	 		url:'http://www.cu0515.com/wx/codeToOpenId/'+code,
-			async : false, 
-			error : function(request) {
-	
-			},
-			success : function(data) { 
+			async : false,
+			error : function(request) {},
+			success : function(data) {
 				var  openid=data.data.openId;
-				//var openid="oEsXmwRAQyi8Xffmng6M-CxxyC0A";
-				$.ajax({                        
-			 		type: "post",                 
-			 		url:'http://122.192.127.40:8030/wd/checkPic',
-					async : false,
-					data : {
-						openid : openid,
-						pictid : state
-					},
-					error : function(request) {
-						
-					},
-					success : function(data) {  
-						if(data.code==-1){
-							layer.alert('未分配管理员', {
-								icon : 6
-							}); 
-						}else if(data.code==-2){
-							layer.alert('请先关注盐城通讯圈，并且绑定号码', {
-								icon : 6
-							}); 
-						}else if(data.code==-3){
-							layer.alert('请先关注盐城通讯圈，并且绑定号码', {
-								icon : 6
-							}); 
-						}else if(data.code==-4){
-							layer.alert('不是你管理的二维码', {
-								icon : 6
-							}); 
-						}else if(data.code==1){
-							window.location.href="bill.html?agentwxid="+data.data+"&openid="+data.msg; 
-						}else if(data.code==2){
-							window.location.href="agent.html?owner="+data.msg+"&pictid="+data.data; 
-						}else if(data.code==3){
-							window.location.href="agentinfo.html?agentwxid="+data.data; 
-						}else if(data.code==-5){
-							window.location.href="agentapply.html?wx_user_id="+data.msg+"&pictid="+data.data; 
-						}
-					}
-				});
+                window.location.href="http://www.cu0515.com/#/scan/"+openid+"/"+state;
+				// 下面的代码原来在的地方
 			}
-	  });  
+	  });
    	  
 </script> 
 </head>
 </html>
+
+
+
+
+<!--下面的代码
+
+//var openid="oEsXmwRAQyi8Xffmng6M-CxxyC0A";-->
+<!--//				$.ajax({-->
+<!--//			 		type: "post",-->
+<!--//			 		url:'http://122.192.127.40:8030/wd/checkPic',-->
+<!--//					async : false,-->
+<!--//					data : {-->
+<!--//						openid : openid,-->
+<!--//						pictid : state-->
+<!--//					},-->
+<!--//					error : function(request) {-->
+<!--//-->
+<!--//					},-->
+<!--//					success : function(data) {-->
+<!--//						if(data.code==-1){-->
+<!--//							layer.alert('未分配管理员', {-->
+<!--//								icon : 6-->
+<!--//							});-->
+<!--//						}else if(data.code==-2){-->
+<!--//							layer.alert('请先关注盐城通讯圈，并且绑定号码', {-->
+<!--//								icon : 6-->
+<!--//							});-->
+<!--//						}else if(data.code==-3){-->
+<!--//							layer.alert('请先关注盐城通讯圈，并且绑定号码', {-->
+<!--//								icon : 6-->
+<!--//							});-->
+<!--//						}else if(data.code==-4){-->
+<!--//							layer.alert('不是你管理的二维码', {-->
+<!--//								icon : 6-->
+<!--//							});-->
+<!--//						}else if(data.code==1){-->
+<!--//							window.location.href="bill.html?agentwxid="+data.data+"&openid="+data.msg;-->
+<!--//						}else if(data.code==2){-->
+<!--//							window.location.href="agent.html?owner="+data.msg+"&pictid="+data.data;-->
+<!--//						}else if(data.code==3){-->
+<!--//							window.location.href="agentinfo.html?agentwxid="+data.data;-->
+<!--//						}else if(data.code==-5){-->
+<!--//							window.location.href="agentapply.html?wx_user_id="+data.msg+"&pictid="+data.data;-->
+<!--//						}-->
+<!--//					}-->
+<!--//				});-->
