@@ -1,7 +1,6 @@
 package com.wx.entity;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 public class WxOrderTele {
@@ -12,9 +11,31 @@ public class WxOrderTele {
     String tele;
     @Column
     String openId;
+//    @Column
+//    @Temporal(TemporalType.TIMESTAMP)
+//    Date date;
     @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    Date date;
+    Long sharerWxUserId;
+
+    @Column
+    Long qrId;
+
+
+    public Long getQrId() {
+        return qrId;
+    }
+
+    public void setQrId(Long qrId) {
+        this.qrId = qrId;
+    }
+
+    public Long getSharerWxUserId() {
+        return sharerWxUserId;
+    }
+
+    public void setSharerWxUserId(Long sharerWxUserId) {
+        this.sharerWxUserId = sharerWxUserId;
+    }
 
     public Long getId() {
         return id;
@@ -40,13 +61,13 @@ public class WxOrderTele {
         this.openId = openId;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
+//    public Date getDate() {
+//        return date;
+//    }
+//
+//    public void setDate(Date date) {
+//        this.date = date;
+//    }
 
     @Override
     public boolean equals(Object o) {

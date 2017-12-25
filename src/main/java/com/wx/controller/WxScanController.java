@@ -14,7 +14,6 @@ import com.wx.mid.util.WxUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -39,6 +38,22 @@ public class WxScanController {
         return wxQrCodeDao.findById(id);
     }
 
+    //员工信息
+    @RequestMapping(path = "/empByOpenId/{openId}", method = RequestMethod.GET)
+    ResultCode<Employee> empInfo(@PathVariable("openId") String openId) {
+        WxUser wxUser = wxUserDao.findYctxqWxUserByOpenId(openId);
+        if (wxUser.getTele() == null)
+            return new ResultCode(1, "no tele", null);
+
+        Employee employee = employeeDao.findByTele(wxUser.getTele());
+
+        if (employee == null)
+            return new ResultCode(2, "no emp", null);
+
+        return new ResultCode(0, "ok", employee);
+    }
+
+
     //%sv%根据tele或nickName查询wxUserId
     @RequestMapping(path = "/wxUsers/{searchValue}", method = RequestMethod.GET)
     //%sv%
@@ -55,14 +70,20 @@ public class WxScanController {
         else
             return new ResultCode(1, "errorId", false);
     }
-    @RequestMapping(path = "/addOrder/", method = RequestMethod.POST)
+
+    //增加订单号码,
+    @RequestMapping(path = "/addOrder", method = RequestMethod.POST)
     ResultCode addOrder(@RequestBody Order order) {
-        WxOrderTele wxOrderTele=new WxOrderTele();
+        WxQrCode wxQrCode = wxQrCodeDao.findById(order.qrId);
+        WxOrderTele wxOrderTele = new WxOrderTele();
         wxOrderTele.setId(wxUtils.getSeqencesValue().longValue());
         wxOrderTele.setTele(order.tele);
         wxOrderTele.setOpenId(order.openId);
-        wxOrderTele.setDate(new Date());
-        return new ResultCode(0, "ok", true);
+//        wxOrderTele.setDate(new Date());
+        wxOrderTele.setQrId(order.qrId);
+        wxOrderTele.setSharerWxUserId(wxQrCode.getWxUserId());
+        WxOrderTele wxOrderTele1= wxOrderTeleDao.save(wxOrderTele);
+        return new ResultCode(0, "ok", wxOrderTele1);
     }
 
 
@@ -72,55 +93,54 @@ public class WxScanController {
     }
 
     @PutMapping(value = "/wxAgent/{qrId}")
-    ResultCode addWxWxAgent(@PathVariable("qrId")Long qrId,@RequestBody WxAgent wxAgent) {
+    ResultCode addWxWxAgent(@PathVariable("qrId") Long qrId, @RequestBody WxAgent wxAgent) {
 
-        WxQrCode wxQrCode=wxQrCodeDao.findById(qrId);
-        if(wxQrCode.getWxUserId()!=null)
-            return new ResultCode(1,"二维码代理商信息不可重复录入",null);
+        WxQrCode wxQrCode = wxQrCodeDao.findById(qrId);
+        if (wxQrCode.getWxUserId() != null)
+            return new ResultCode(1, "二维码代理商信息不可重复录入", null);
         wxQrCode.setWxUserId(wxAgent.getWxUserId());//保存wxUserId
         wxQrCode.setAddOpenId(wxAgent.getAddOpenId());//保存openId
-        WxUser wxUser=wxUserDao.findYctxqWxUserByOpenId(wxAgent.getAddOpenId());
-        Employee employee= employeeDao.findByTele(wxUser.getTele());
-        if(employee==null)
-         return new ResultCode(1,"没有权限增加代理商",null);
+        WxUser wxUser = wxUserDao.findYctxqWxUserByOpenId(wxAgent.getAddOpenId());
+        Employee employee = employeeDao.findByTele(wxUser.getTele());
+        if (employee == null)
+            return new ResultCode(1, "没有权限增加代理商", null);
         wxQrCode.setOwnerId(employee.getId());//保存ownerID
         wxQrCodeDao.save(wxQrCode);
-
         wxAgent.setId(wxUtils.getSeqencesValue().longValue());
-        WxAgent wxAgent1= wxAgentDao.save(wxAgent);
-        return new ResultCode(0,"ok",wxAgent1);
+        WxAgent wxAgent1 = wxAgentDao.save(wxAgent);
+        return new ResultCode(0, "ok", wxAgent1);
     }
 
 
 }
 
 
- class Order {
+class Order {
     String tele;
     String openId;
     Long qrId;
 
-     public Long getQrId() {
-         return qrId;
-     }
+    public Long getQrId() {
+        return qrId;
+    }
 
-     public void setQrId(Long qrId) {
-         this.qrId = qrId;
-     }
+    public void setQrId(Long qrId) {
+        this.qrId = qrId;
+    }
 
-     public String getTele() {
-         return tele;
-     }
+    public String getTele() {
+        return tele;
+    }
 
-     public void setTele(String tele) {
-         this.tele = tele;
-     }
+    public void setTele(String tele) {
+        this.tele = tele;
+    }
 
-     public String getOpenId() {
-         return openId;
-     }
+    public String getOpenId() {
+        return openId;
+    }
 
-     public void setOpenId(String openId) {
-         this.openId = openId;
-     }
- }
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+}
