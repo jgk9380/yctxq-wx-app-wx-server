@@ -9,5 +9,5 @@ import java.util.List;
 public interface WxRedPaperDao  extends CrudRepository<WxRedPaper,Long>{
     WxRedPaper findById(Long Id);
     List<WxRedPaper> findByOpenId(String openId);
-    List<WxRedPaper> findBySendDateBetween(Date d1,Date d2);
+    List<WxRedPaper> findBySendDateBetweenAndSendResultEquals(Date d1,Date d2,String success);
 }

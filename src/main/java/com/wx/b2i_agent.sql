@@ -356,7 +356,17 @@ create table wx_red_paper(--红包发送记录
   last_result varchar2(100)  -- 最后结果
 )
 
-
+drop table wx_fee_order
+create table wx_fee_order(--所有待付订单
+    order_id varchar2（20）primary key,--
+    order_time date,
+    dev_number varchar2(11),--订单号码
+    user_number varchar2(12),--联系号码
+    import_date date default sysdate,
+    status number  default 0, --0,待处理   1,已发送佣金  -1，处理结束
+    mch_bill_no varchar2(20),--红包流水号
+    remark varchar2(1000)--发送佣金说明
+)
 
 --  每日微信推送报表
 --  1、渠道经理

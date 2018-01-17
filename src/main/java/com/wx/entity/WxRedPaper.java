@@ -30,6 +30,16 @@ public class WxRedPaper {
     //    last_result varchar2(100)  -- 最后结果
     @Column
     String lastResult;
+@Column
+    String returnMsg;
+
+    public String getReturnMsg() {
+        return returnMsg;
+    }
+
+    public void setReturnMsg(String returnMsg) {
+        this.returnMsg = returnMsg;
+    }
 
     public Long getId() {
         return id;

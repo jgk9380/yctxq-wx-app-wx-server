@@ -1,6 +1,9 @@
 package com.wx.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class WxOrderTele {
@@ -11,15 +14,24 @@ public class WxOrderTele {
     String tele;
     @Column
     String openId;
-//    @Column
+    //    @Column
 //    @Temporal(TemporalType.TIMESTAMP)
 //    Date date;
     @Column
     Long sharerWxUserId;
-
     @Column
     Long qrId;
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    Date createDate;
 
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 
     public Long getQrId() {
         return qrId;
