@@ -345,6 +345,18 @@ create table wx_log(--系统日志。
 select * from wx_app for update
 
 
+create table wx_red_paper(--红包发送记录
+  id number primary key,
+  open_Id varchar2(80),
+  total_fee number,
+  wishing varchar2(100),
+  remark varchar2(100),
+  send_date date default sysdate,
+  send_result varchar2(100) ,--发送结果
+  last_result varchar2(100)  -- 最后结果
+)
+
+
 
 --  每日微信推送报表
 --  1、渠道经理

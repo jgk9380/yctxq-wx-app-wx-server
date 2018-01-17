@@ -109,7 +109,7 @@ public class QrCodeCreater {
 //    }
 
     public void create500QrCode() {
-        for (int i = 0; i < 5000; i++)
+        for (int i = 0; i < 10000; i++)
             try {
                 this.createWxQrCode();
             } catch (WriterException e) {
@@ -120,12 +120,13 @@ public class QrCodeCreater {
     }
 
     public void downLoad(){//下载二维码文件
-        List<WxQrCode> wxQrCodeList =wxQrCodeDao.findByOwnerIdIsNull();
+       // List<WxQrCode> wxQrCodeList =wxQrCodeDao.findByOwnerIdIsNull();
+        List<WxQrCode> wxQrCodeList =wxQrCodeDao.findByIdGreaterThan(9082678l);
         int i=0;
         for(WxQrCode wxQrCode:wxQrCodeList){
             i++;
             // String fileName="e:\\qrcode\\"+wxQrCode.getId()+"_"+wxQrCode.getPictId()+".jpg";
-            String fileName="e:\\qrcode\\No"+wxQrCode.getId()+".jpg";
+            String fileName="e:\\qrcode\\No."+wxQrCode.getId()+".jpg";
             System.out.println("fileName="+fileName+"  at: "+i);
             WxResource wxResource= wxResourceDao.findById(wxQrCode.getPictId());
             try {

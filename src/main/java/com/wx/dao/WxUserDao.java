@@ -28,6 +28,9 @@ public interface WxUserDao extends CrudRepository<WxUser, Long> {
     @Query(value = "select o from WxUser o where o.tele=:tele and o.wxApp.id=:appId")
     WxUser findByTeleAndAppId(@Param("tele") String tele, @Param("appId") String appId);
 
+    @Query(value = "select o from WxUser o where o.tele=:tele and o.wxApp.id='wx7dcc6b2e03a47c0b'")
+    WxUser findYctxqWxUserByTele(@Param("tele") String tele);
+
     @Query(value = "select count(o) from WxUser o where o.referee=?1 and o.subscribeStatus=1")
     int getRefereeCount(WxUser wxUser);
 

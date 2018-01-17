@@ -101,7 +101,7 @@ public class WxUserServiceController {
             return new ResultCode<>(-1, "错误的验证码！", false);
         }
         if (wxUserDao.findByTeleAndAppId(tele, wxManager.getAppId()) != null) {
-            return new ResultCode<>(-1, "tele duplicate", "号码重复!");
+            return new ResultCode<>(-2, "号码重复", "号码重复!");
         }
         WxUser wxUser = wxUserDao.findById(wxUserId);
         wxUser.setTele(tele);
