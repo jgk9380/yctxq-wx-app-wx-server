@@ -13,12 +13,11 @@ public interface WxArticleDao extends CrudRepository<WxArticle,Long> {
     //新闻列表:参数:openId
     //todo根据openId参数实现读取逻辑
 
-
-    @Query(value = "select o from WxArticle  o where o.type >=10 and o.type<=20")
+    @Query(value = "select o from WxArticle  o where o.type >=10 and o.type<=20 order by  o.createDate desc")
     List<WxArticle> findAllNews();
 
     //通信知识列表：openId
-    @Query(value = "select o from WxArticle  o where o.type >20 and o.type<=30")
+    @Query(value = "select o from WxArticle  o where o.type >20 and o.type<=30 order by  o.createDate desc")
     List<WxArticle> findAllKnowledges();
 
 }

@@ -49,10 +49,10 @@ public class Server implements CommandLineRunner {
         //todo 方便测试代码，打包时去除
         //wxMsgListener.startListen();
         //创建二维码
-        //qrCodeCreater.create500PermQrCode();
+       // qrCodeCreater.create500QrCode();
         //        qrCodeCreater.create500QrCode();
         //下载 二维码到文件
-        //      qrCodeCreater.downLoad();
+           //   qrCodeCreater.downLoad();
         //发红包
         //                try {
         //                  //  TestRedPaper.sendRedPack("12828839012016101424","oEsXmwWQkf6V5KaLUMHCQHpC8F1E","盐城通信圈", "100","1","感谢您成功推荐用户:15651554341！","王者联盟","15651554341发展奖励","127.0.0.1");

@@ -19,10 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import javax.xml.transform.Result;
+import java.util.*;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -61,7 +59,7 @@ public class WxUserServiceController {
 //                jsonObject.put("errorCode","1");
 //                jsonObject.put("errorMessage","验证码重复发送");
 //                return jsonObject;
-//            }
+//         }
 
         String strCode = "";
         for (int i = 0; i < 4; i++) {
@@ -91,6 +89,20 @@ public class WxUserServiceController {
         }
 
     }
+    @RequestMapping(path = "/userList/{tele}")//查找用户列表
+    @ResponseBody
+    public ResultCode queryUserList(@PathVariable("tele") String teleOrNickName) {
+        System.out.println("tele="+teleOrNickName);
+    List<WxUser> list=wxUserDao.findLikeByTeleOrNickname("%"+teleOrNickName+"%");
+
+    if(list!=null&&list.size()>10)
+        list=list.subList(0,10);
+    for(WxUser wxUser:list){
+        wxUser.setWxApp(null);
+    }
+        return new ResultCode(0,"ok",list);
+    }
+
 
     //绑定用户号码
     @RequestMapping(path = "/bindTele/{wxUserId}/{tele}/{code}", method = RequestMethod.POST)
@@ -135,40 +147,7 @@ public class WxUserServiceController {
         }
     }
 
-    //消息回复
-    @RequestMapping(path = "/replyMessage/{sender}/{receiver}/{replyContent}", method = RequestMethod.POST)
-    @ResponseBody
-    public ResultCode replyMsg(@PathVariable("sender") String sender, @PathVariable("receiver") int receiver, @PathVariable("replyContent") String replyContent) {
-        if (replyContent.equals("confirmAll")) { //这个时间前面的flag改为1
-            java.util.List<WxManualMessage> wxManualMessageList = wxManualMessageDao.findBySenderAndReadedAndSendDateBefore("" + receiver, new Date());
-            wxManualMessageList.stream().forEach(wmm -> wmm.setReaded(1));
-            wxManualMessageDao.save(wxManualMessageList);
-            return new ResultCode<>(0, "errorCode", true);
-        }
-        System.out.println("sender = [" + sender + "], receiver = [" + receiver + "], replyContent = [" + replyContent + "]");
-        LoginUser loginUser = loginUserDao.findByName(sender);
-        WxManualMessage wxManualMessage = new WxManualMessage();
-        wxManualMessage.setId(wxUtils.getSeqencesValue().intValue());
-        wxManualMessage.setSender(loginUser.getEmpId());
-        wxManualMessage.setSendDate(new Date());
-        wxManualMessage.setType("down");
-        wxManualMessage.setContent(replyContent);
-        wxManualMessage.setReceiver(receiver);
-        WxUser wxUser = wxUserDao.findById(receiver);
-        boolean result = wxManager.getWxOperator().sendTxtMessage(wxUser.getOpenId(), replyContent);
-        //todo 这个时间前面的flag改为1
-        if (result) {
-            wxManualMessageDao.save(wxManualMessage);
-            java.util.List<WxManualMessage> l = wxManualMessageDao.findBySenderAndReadedAndSendDateBefore("" + receiver, new Date());
-            l.stream().forEach(wmm -> {
-                wmm.setReaded(1);
-                wxManualMessage.setReplyDate(new Date());
-            });
-            wxManualMessageDao.save(l);
-            return new ResultCode<>(0, "errorCode", true);
-        }
-        return new ResultCode<>(1, "fail replyMsg", false);
-    }
+
 
 
     //取得微信用户的微信二维码

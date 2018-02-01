@@ -9,6 +9,7 @@ com\onesms\ws\SmsStub$ReplyRequest$Factory.class
 com\Server.class
 com\config\web\MyMvcConfig.class
 com\wx\mid\handle\EventMsgHandle.class
+com\wx\controller\RedPaperController.class
 com\wx\entity\WxLog.class
 com\wx\UserType.class
 com\wx\qrcodetools\QRCodeUtil.class
@@ -17,6 +18,7 @@ com\wx\red\paper\test\SHA1.class
 com\onesms\ws\SmsStub$ReplyConfirmResponse$Factory.class
 com\wx\dao\article\WxArticleShareHistoryDao.class
 com\onesms\ws\SmsStub$4.class
+com\wx\dao\WxFeeOrderDao.class
 com\wx\mid\handle\UnSubscripteHandle.class
 com\wx\mid\base\menu\Button.class
 com\wx\entity\WxApp.class
@@ -87,6 +89,7 @@ com\wx\controller\servlet\OAuthServlet.class
 com\control\LoginUserAdminController.class
 com\invalidator\SmsCodeValidaterImpl.class
 com\dao\p\BtiOrderDao.class
+com\wx\entity\WxFeeOrder.class
 com\onesms\bean\SmsServieImpl.class
 com\wx\controller\Order.class
 com\wx\mid\base\message\resp\NewsMessage.class
@@ -136,6 +139,7 @@ com\wx\mid\handle\WxMsgHandle.class
 com\wx\mid\base\util\SignUtil.class
 com\entity\p\SystemPrivilege.class
 com\wx\qrcodetools\QRCodeTest.class
+com\wx\entity\WxRedPaper.class
 com\wx\mid\base\message\event\BaseEvent.class
 com\wx\controller\TestTrans.class
 com\onesms\ws\SmsStub$1.class
@@ -173,6 +177,7 @@ com\onesms\ws\SmsStub$2.class
 com\onesms\ws\SmsStub$ReportResponse$1.class
 com\wx\mid\util\sms\Sms.class
 com\onesms\ws\SmsStub$Sms$1.class
+com\wx\dao\WxRedPaperDao.class
 com\wx\mid\util\PictUtils.class
 com\wx\controller\WebController.class
 com\entity\p\Depart.class

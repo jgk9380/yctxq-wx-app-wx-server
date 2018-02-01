@@ -6,9 +6,11 @@ import com.wx.entity.WxOrderTele;
 import com.wx.entity.WxRedPaper;
 import com.wx.entity.WxUser;
 import com.wx.red.paper.test.TestRedPaper;
+import org.apache.axis2.databinding.types.xsd.Integer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +29,15 @@ public class RedPaperController {
     @Autowired
     WxQrCodeDao wxQrCodeDao;
 
-    @RequestMapping(value = "/send", method = RequestMethod.POST)
+    @RequestMapping(value = "/send", method = RequestMethod.POST, consumes = "application/json;charset=UTF-8")
     @ResponseBody
-    public ResultCode sendRedPaper(@RequestBody Map map) {
+    public ResultCode sendRedPaper(@RequestBody Map map, Principal principal) {
+        System.out.println("prin=" + principal.toString());
         //发红包
         String openId = (String) map.get("openId");
+        if (openId == null) {
+            return new ResultCode(0, "openId is null", "  ");
+        }
         if (openId.length() == 11) {
             WxUser wxUser = wxUserDao.findYctxqWxUserByTele(openId);
             if (wxUser == null)
@@ -42,13 +48,16 @@ public class RedPaperController {
             if (wxUser == null)
                 return new ResultCode(-1, "openId不正确", "openId不正确");
         }
-        int totalFee = (int) map.get("totalFee");
+        int totalFee = java.lang.Integer.parseInt((String) map.get("totalFee"));
         String wishing = (String) map.get("wishing");
+        System.out.println("--wishing=" + wishing);
         String remark = (String) map.get("remark");
-        System.out.println("--openId = [" + openId + "]" + "totalFee = [" + totalFee + "]   " + wishing + "   " + remark);
+        String sendName = (String) map.get("sendName");
+
+        // System.out.println("--openId = [" + openId + "]" + "totalFee = [" + totalFee + "]   " + wishing + "   " + remark);
         try {
             //org.json.JSONObject jsonObject=  TestRedPaper.sendDeveloperRedPaper("oEsXmwWQkf6V5KaLUMHCQHpC8F1E",100,"感谢您成功推荐用户:15651554341！","15651554341发展奖励");
-            org.json.JSONObject jsonObject = TestRedPaper.sendDeveloperRedPaper(openId, totalFee, wishing, remark);
+            org.json.JSONObject jsonObject = TestRedPaper.sendDeveloperRedPaper(openId, totalFee, wishing, remark, sendName);
             System.out.println("return =" + jsonObject);
             if (jsonObject.getString("result_code").equalsIgnoreCase("SUCCESS")) {
                 System.out.println("SUCCESS");
@@ -58,7 +67,7 @@ public class RedPaperController {
                 wxRedPaper.setOpenId(openId);
                 wxRedPaper.setWishing(wishing);
                 wxRedPaper.setTotalFee(totalFee);
-                wxRedPaper.setRemark(remark);
+                wxRedPaper.setRemark(remark + " by " + principal.getName());
                 wxRedPaper.setSendDate(new Date());
                 wxRedPaper.setSendResult(jsonObject.getString("result_code"));
                 wxRedPaper.setReturnMsg(jsonObject.getString("return_msg"));
@@ -71,7 +80,7 @@ public class RedPaperController {
                 wxRedPaper.setOpenId(openId);
                 wxRedPaper.setWishing(wishing);
                 wxRedPaper.setTotalFee(totalFee);
-                wxRedPaper.setRemark(remark);
+                wxRedPaper.setRemark(remark + " by " + principal.getName());
                 wxRedPaper.setSendDate(new Date());
                 wxRedPaper.setSendResult(jsonObject.getString("result_code"));
                 wxRedPaper.setReturnMsg(jsonObject.getString("return_msg"));
@@ -86,49 +95,59 @@ public class RedPaperController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-    public ResultCode querySendRedPaper(@RequestParam long date1, @RequestParam long date2, @RequestParam boolean success) {
+    public ResultCode querySendRedPaperList(@RequestParam long date1, @RequestParam long date2, @RequestParam boolean success, @RequestParam boolean flashStatus) {
         //发红包
 //        Long date1= (Long) map.get("date1");
 //        Long date2= (Long) map.get("date2");
-        System.out.println("date1=" + date1);
-        System.out.println("date2=" + date2);
+//        System.out.println("date1=" + date1);
+//        System.out.println("date2=" + date2);
         Date currentDate = new Date();
         Date d1 = new Date();
         d1.setTime(date1);
         Date d2 = new Date();
         d2.setTime(date2);
-        System.out.println("d2=" + d1 + "  d2=" + d2 + "  success" + success);
+        System.out.println("d2=" + d1 + "  d2=" + d2 + "  success" + success + " flashStatus=" + flashStatus);
         if (success) {
             List<WxRedPaper> list = wxRedPaperDao.findBySendDateBetweenAndSendResultEquals(d1, d2, "SUCCESS");
-            for (WxRedPaper wxRedPaper : list) {
-                if (wxRedPaper.getLastResult() == null
-                        || wxRedPaper.getLastResult().equalsIgnoreCase("SENDING")
-                        || wxRedPaper.getLastResult().equalsIgnoreCase("SENT")
-                        || wxRedPaper.getLastResult().equalsIgnoreCase("RFUND_ING")) {
-                    try {
-                        org.json.JSONObject jsonObject = TestRedPaper.QuerySendRedPack(wxRedPaper.getId().toString());
-                        wxRedPaper.setLastResult(jsonObject.getString("status"));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            wxRedPaperDao.save(list);
+            if (flashStatus)
+                flashStatus(list);
             return new ResultCode(0, "ok", list);
         } else {
             List<WxRedPaper> list = wxRedPaperDao.findBySendDateBetweenAndSendResultEquals(d1, d2, "FAIL");
+            if (flashStatus)
+                flashStatus(list);
             return new ResultCode(0, "ok", list);
         }
+    }
 
+    public void flashStatus(List<WxRedPaper> list) {
+        for (WxRedPaper wxRedPaper : list) {
+            if (wxRedPaper.getLastResult() == null
+                    || wxRedPaper.getLastResult().equalsIgnoreCase("SENDING")
+                    || wxRedPaper.getLastResult().equalsIgnoreCase("SENT")
+                    || wxRedPaper.getLastResult().equalsIgnoreCase("RFUND_ING")) {
+                System.out.println("query redPaper status for "+ wxRedPaper.getId());
+                try {
+                    org.json.JSONObject jsonObject = TestRedPaper.QuerySendRedPack(wxRedPaper.getId().toString());
+                    System.out.println("returns=" + jsonObject.toString());
+                    if (jsonObject.keySet().contains("status"))
+                        wxRedPaper.setLastResult(jsonObject.getString("status"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        wxRedPaperDao.save(list);
     }
 
     //查询红包领取状态
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    @RequestMapping(value = "/query", method = RequestMethod.GET, consumes = "application/json;charset=UTF-8")
     @ResponseBody
     public ResultCode querySendRedPaper(@RequestParam String mch_billno) {
         try {
             org.json.JSONObject jsonObject = TestRedPaper.QuerySendRedPack(mch_billno);
             System.out.println("query result=" + jsonObject.toString());
+
             return new ResultCode(0, "ok", jsonObject);
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,19 +197,20 @@ public class RedPaperController {
     }
 
     //发送发展奖励列表：(没有发放的的记录,当天最近的一条记录)
-    @RequestMapping(value = "/sendDevRedPaper", method = RequestMethod.POST)
+    @RequestMapping(value = "/sendDevRedPaper", method = RequestMethod.POST, consumes = "application/json;charset=UTF-8")
     @ResponseBody
-    public ResultCode sendDevList(@RequestBody Map map) {
+    public ResultCode sendDevList(@RequestBody Map map, Principal principal) {
         System.out.println("map=" + map.toString());
         String openId = (String) map.get("devOpenId");
-        int totalFee = (int) map.get("fee")*100;
+        int totalFee = (int) map.get("fee") * 100;
         String wishing = "感谢您成功推荐用户:" + map.get("devNumber") + "！";
         String remark = "订单号：" + map.get("orderId") + "佣金";
+        String sendName = (String) map.get("sendName");
         WxFeeOrder wxFeeOrder1 = wxFeeOrderDao.findOne((String) map.get("orderId"));
-        if(wxFeeOrder1.getStatus()!=0){
-            return new ResultCode(-1,"数据不正确!","   ");
+        if (wxFeeOrder1.getStatus() != 0) {
+            return new ResultCode(-1, "数据不正确!", "   ");
         }
-        org.json.JSONObject jsonObject = TestRedPaper.sendDeveloperRedPaper(openId, totalFee, wishing, remark);
+        org.json.JSONObject jsonObject = TestRedPaper.sendDeveloperRedPaper(openId, totalFee, wishing, remark, sendName);
         if (jsonObject.getString("result_code").equalsIgnoreCase("SUCCESS")) {
             System.out.println("SUCCESS");
             //todo  记录红包数据
@@ -199,7 +219,7 @@ public class RedPaperController {
             wxRedPaper.setOpenId(openId);
             wxRedPaper.setWishing(wishing);
             wxRedPaper.setTotalFee(totalFee);
-            wxRedPaper.setRemark(remark);
+            wxRedPaper.setRemark(remark + " by " + principal.getName());
             wxRedPaper.setSendDate(new Date());
             wxRedPaper.setSendResult(jsonObject.getString("result_code"));
             wxRedPaper.setReturnMsg(jsonObject.getString("return_msg"));
@@ -207,7 +227,7 @@ public class RedPaperController {
             WxFeeOrder wxFeeOrder = wxFeeOrderDao.findOne((String) map.get("orderId"));
             wxFeeOrder.setStatus(2);
             wxFeeOrder.setMch_bill_no(jsonObject.getString("mch_billno"));
-            wxFeeOrder.setRemark("佣金于"+new Date()+"发放");
+            wxFeeOrder.setRemark("佣金于" + new Date() + "发放");
             wxFeeOrderDao.save(wxFeeOrder);
             return new ResultCode(0, "红包发送成功", " ");
         } else {
@@ -217,7 +237,7 @@ public class RedPaperController {
             wxRedPaper.setOpenId(openId);
             wxRedPaper.setWishing(wishing);
             wxRedPaper.setTotalFee(totalFee);
-            wxRedPaper.setRemark(remark);
+            wxRedPaper.setRemark(remark + " by " + principal.getName());
             wxRedPaper.setSendDate(new Date());
             wxRedPaper.setSendResult(jsonObject.getString("result_code"));
             wxRedPaper.setReturnMsg(jsonObject.getString("return_msg"));
@@ -225,7 +245,7 @@ public class RedPaperController {
             WxFeeOrder wxFeeOrder = wxFeeOrderDao.findOne((String) map.get("orderId"));
             wxFeeOrder.setStatus(-1);
             wxFeeOrder.setMch_bill_no(jsonObject.getString("mch_billno"));
-            wxFeeOrder.setRemark("佣金于"+new Date()+"发放失败:"+jsonObject.getString("return_msg"));
+            wxFeeOrder.setRemark("佣金于" + new Date() + "发放失败:" + jsonObject.getString("return_msg"));
             wxFeeOrderDao.save(wxFeeOrder);
             return new ResultCode(-1, jsonObject.getString("result_code") + "   errorMsg:" + jsonObject.getString("return_msg"), "   ");
         }

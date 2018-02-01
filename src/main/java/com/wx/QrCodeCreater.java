@@ -121,7 +121,7 @@ public class QrCodeCreater {
 
     public void downLoad(){//下载二维码文件
        // List<WxQrCode> wxQrCodeList =wxQrCodeDao.findByOwnerIdIsNull();
-        List<WxQrCode> wxQrCodeList =wxQrCodeDao.findByIdGreaterThan(9082678l);
+        List<WxQrCode> wxQrCodeList =wxQrCodeDao.findByIdGreaterThan(9119993l);
         int i=0;
         for(WxQrCode wxQrCode:wxQrCodeList){
             i++;

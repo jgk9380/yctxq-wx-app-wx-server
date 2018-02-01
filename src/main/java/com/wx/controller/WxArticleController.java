@@ -43,21 +43,21 @@ public class WxArticleController {
     WxArticleLikeDao wxArticleLikeDao;
     @Autowired
     WxArticleHateDao wxArticleHateDao;
-
     //todo ?所有分享上一个分享痕迹。 shareId
-
-
     //新闻列表:参数:openId
     @GetMapping("/newsList/{openId}")
     ResultCode getNewList(@PathVariable("openId") String openId) {
+
+        //List<WxArticle> wxArticleList=wxArticleDao.findAllNews();
+
         return new ResultCode(0, "ok", wxArticleDao.findAllNews().subList(0, 20).stream().map(x -> {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", x.getId());
             jsonObject.put("title", x.getTitle());
             jsonObject.put("pictureUrl", x.getPictureUrl());
             return jsonObject;
-
         }).toArray());
+
     }
 
     //通信知识列表：openId
@@ -71,7 +71,6 @@ public class WxArticleController {
     ResultCode getFavoriteList(@PathVariable("openId") String openId) {
         List<WxArticleFavorite> l = wxArticleFavoriteDao.findByFavoriterOpenId(openId);
         return new ResultCode(0, "ok", l.stream().map(x -> wxArticleDao.findById(x.getArticleId())).toArray());
-
     }
 
     //取单个文章：openId
@@ -153,8 +152,6 @@ public class WxArticleController {
         }
         return new ResultCode(1, "readHistory is exist", "阅读记录已经存在");
     }
-
-
 
     //获取shareId,用于分享保存
     @GetMapping("/getCurrentShareId")
@@ -424,9 +421,10 @@ public class WxArticleController {
         WxArticleShareHistory wxArticleShareHistory = wxArticleShareHistoryDao.findOne(shareId);
         String openId = wxArticleShareHistory.getSharerOpenId();
         WxUser wxUser = wxUserDao.findYctxqWxUserByOpenId(openId);
-        WxQrCode wxQrCode = wxQrCodeDao.findByWxUserId(wxUser.getId());
-        if (wxQrCode != null)
-            return new ResultCode(0, "ok", wxQrCode.getPictId());
+        List<WxQrCode> wxQrCodeList = wxQrCodeDao.findByWxUserId(wxUser.getId());
+
+        if (wxQrCodeList != null&&wxQrCodeList.size()>0)
+            return new ResultCode(0, "ok", wxQrCodeList.get(0).getPictId());
         else return new ResultCode(0, "ok", 9000800);//todo 测试我的二维码
     }
 
@@ -443,11 +441,8 @@ public class WxArticleController {
     //根据shareId返回微信二维码
     @GetMapping("/wxUserByShareId/{shareId}")
     ResultCode wxUserByShareId(@PathVariable("shareId") Long shareId) {
-
         WxArticleShareHistory wxArticleShareHistory=wxArticleShareHistoryDao.findOne(shareId);
-
         WxUser wxUser=wxUserDao.findYctxqWxUserByOpenId(wxArticleShareHistory.getSharerOpenId());
-
         return new ResultCode(0,"ok",wxUser);
     }
 }
